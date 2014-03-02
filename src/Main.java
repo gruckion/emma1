@@ -30,14 +30,6 @@ public class Main implements Runnable {
 			while(true) {
 				System.out.println("Got here: " + count);
 				count++;
-				/*
-				 * Start the SingletonTask running if it is not.
-				 * */
-				if(!SingletonTask.getRunning()) {
-					SingletonTask.setRunning(true);
-					SingletonTask.setThreadId(totalThreads);
-					startRunnable(task,1);
-				}
 				try {
 					Thread.sleep(sleep);
 				} catch (Exception ex) {
@@ -55,10 +47,9 @@ public class Main implements Runnable {
 	 * standard process to producing a runnable thread
 	 * */
 	public void startRunnable(Runnable runnable, int priority) {
-		thread.add(new Thread(runnable));
-		thread.get(totalThreads).start();
-		thread.get(totalThreads).setPriority(priority);
-		totalThreads++;
+		Thread thread = new Thread(runnable);
+		thread.start();
+		thread.setPriority(priority);
 	}
 	
 	// The final instance task of the SigletonTask.
@@ -67,8 +58,4 @@ public class Main implements Runnable {
 	private int count = 0;
 	// The sleep time in milliseconds for the Main thread
 	private int sleep = 1000;
-	// The list of active threads
-	public static ArrayList <Thread>thread = new ArrayList<Thread> ();
-	// The total number of active threads.
-	public int totalThreads = 0;
 }
