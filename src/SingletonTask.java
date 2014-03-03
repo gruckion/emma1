@@ -1,9 +1,3 @@
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.Executors;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 public class SingletonTask implements Runnable {
 
 	private static SingletonTask singleton = null;
@@ -30,28 +24,16 @@ public class SingletonTask implements Runnable {
 			ex.printStackTrace();
 		}
 		return;
-	}	
-
-	private final ScheduledExecutorService scheduler = Executors
-			.newScheduledThreadPool(1);
-
-	public void beepForAnHour() {
-		if(task == null)
-			task = this;
-		else 
-			return;
-		
-		final ScheduledFuture<?> beeperHandle = scheduler.scheduleAtFixedRate(
-				task, initalDelay, noramlDelay, SECONDS);
-		scheduler.schedule(new Runnable() {
-			public void run() {
-				beeperHandle.cancel(true);
-			}
-		}, duration, SECONDS);
 	}
 	
-	private Runnable task = null;;
-	private int initalDelay = 3, noramlDelay = 3;
-	private int duration = 3600;// Seconds
+	public void setSingletonTask(Runnable task) {
+		this.task = task;
+	}
+	
+	public Runnable getSingletonTask() {
+		return task;
+	}
+	
+	private Runnable task = null;
 	private int count = 0;// Counts the passes through the thread
 }
