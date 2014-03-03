@@ -34,6 +34,15 @@ public class SingletonTask implements Runnable {
 		return task;
 	}
 	
-	private Runnable task = null;
+	public void setActiveSingleton(boolean state) {
+		activeSingleton = state;
+	}
+	
+	public boolean getActiveSingleton() {
+		return activeSingleton;
+	}
+	
+	private static boolean activeSingleton = false;
+	private static Runnable task = null;
 	private int count = 0;// Counts the passes through the thread
 }
