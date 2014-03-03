@@ -29,7 +29,7 @@ public class Main implements Runnable {
 	public void run() {
 		try {
 			while (true) {
-				//System.out.println("Got here: " + count);
+				//System.out.println("Main thread call: " + count);
 				scheduleTask();
 				count++;
 				try {
@@ -56,23 +56,32 @@ public class Main implements Runnable {
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
 	public void scheduleTask() {
-		if(singleton.getSingletonTask() != null)
+		if(singleton.getSingletonRunnable() != null)
 			return;
 		
-		final ScheduledFuture<?> beeperHandle = scheduler.scheduleAtFixedRate(
+		futureTask = scheduler.scheduleAtFixedRate(
 				getTask(), initalDelay, noramlDelay, SECONDS);
+		
 		scheduler.schedule(new Runnable() {
 			public void run() {
-				beeperHandle.cancel(true);
+				futureTask.cancel(true);
 			}
 		}, duration, SECONDS);
 	}
 
 	private Runnable getTask() {
-		if(singleton.getSingletonTask() == null)
-			singleton.setSingletonTask(singleton);
+		if(singleton.getSingletonRunnable() == null)
+			singleton.setSingletonRunnable(singleton);
 		 
-		return singleton.getSingletonTask();
+		return singleton.getSingletonRunnable();
+	}
+	
+	public static void setFutureTask(ScheduledFuture<?> task) {
+		futureTask = task;
+	}
+	
+	public static ScheduledFuture<?> getFutureTask() {
+		return futureTask;
 	}
 	
 	// The final instance task of the SigletonTask.
@@ -81,6 +90,7 @@ public class Main implements Runnable {
 	private int count = 0;
 	// The sleep time in milliseconds for the Main thread
 	private int sleep = 1000;
-	private int initalDelay = 3, noramlDelay = 3;
+	private int initalDelay = 2, noramlDelay = 2;
 	private int duration = 3600;// Seconds
+	private static ScheduledFuture<?> futureTask = null;
 }

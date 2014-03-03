@@ -18,7 +18,11 @@ public class SingletonTask implements Runnable {
 	 */
 	public void run() {
 		try {
-			System.out.println("2Got here: " + count);
+			System.out.println("Singleton Task: " + count);
+			if(count == 5) {
+				System.out.println("Singleton Counter reached 5 cancel future tasks");
+				closeSingletonTask();
+			}
 			count++;
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -26,11 +30,11 @@ public class SingletonTask implements Runnable {
 		return;
 	}
 	
-	public void setSingletonTask(Runnable task) {
+	public void setSingletonRunnable(Runnable task) {
 		this.task = task;
 	}
 	
-	public Runnable getSingletonTask() {
+	public Runnable getSingletonRunnable() {
 		return task;
 	}
 	
@@ -40,6 +44,12 @@ public class SingletonTask implements Runnable {
 	
 	public boolean getActiveSingleton() {
 		return activeSingleton;
+	}
+	
+	private void closeSingletonTask() {
+		Main.getFutureTask().cancel(true);
+		task = null;
+		count = 0;
 	}
 	
 	private static boolean activeSingleton = false;
